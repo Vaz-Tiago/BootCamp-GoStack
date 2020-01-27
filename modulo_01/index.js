@@ -11,6 +11,18 @@ server.use(express.json());
 
 const users = ['Tiago', 'Cibele', 'Jake'];
 
+//Criando um Middleware Global
+server.use((req, res, next) => {
+  console.time('Request');
+  console.log(`Método: ${req.method}; URL: ${req.url}`);
+
+  //O next para que o middleware da rota seja executado.
+  //Não necessáriamente precisa ser um return, após o next()
+  next();
+
+  console.timeEnd('Request')
+});
+
 //Listagem de todos usuários
 server.get('/users', (req, res) => {
   return res.json(users);
