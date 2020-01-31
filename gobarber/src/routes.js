@@ -2,10 +2,7 @@ import { Router } from 'express';
 
 const routes = new Router();
 
-
-routes.get('/', (req, res)=>{
-  return res.json({message: 'Hello World'});
-})
-
+// Correção eslint para deixar tudo em uma linha
+routes.get('/', (req, res) => res.json({ message: 'Hello World' }));
 
 export default routes;
