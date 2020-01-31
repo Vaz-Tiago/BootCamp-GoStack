@@ -2,7 +2,7 @@
 
 
 // Utilizado para resolver problemas de caminho nos sistemas operacionais.
-const { resolve } = require('patch');
+const { resolve } = require('path');
 
 
 
