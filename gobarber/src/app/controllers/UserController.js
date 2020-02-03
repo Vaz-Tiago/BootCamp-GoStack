@@ -23,8 +23,36 @@ class UserController {
   }
 
   async update(req, res) {
-    console.log(req.userId);
-    return res.json({ ok: true });
+    const { email, oldPassword } = req.body;
+
+    // Busca por primary key
+    const user = await User.findByPk(req.userId);
+
+    // Verificação para caso esteja trocando de email
+    if (email && email !== user.email) {
+      const userExists = await User.findOne({ where: { email } });
+
+      if (userExists) {
+        return res.status(400).json({ error: 'User already exists' });
+      }
+    }
+
+    // Verificando se a senha antiga é a mesma que está atualmente cadastrada
+    // Condição só será testada se o usuário tiver digitado a senha antiga
+
+    if (oldPassword && !(await user.checkPassword(oldPassword))) {
+      return res.status(400).json({ error: 'Password does not match' });
+    }
+
+    // Caso todas as alternativas sejam satisfeitas, retorna para o frontend as informações:
+    const { id, name, provider } = await user.update(req.body);
+
+    return res.json({
+      id,
+      name,
+      email,
+      provider,
+    });
   }
 }
 
