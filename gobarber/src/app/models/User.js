@@ -29,6 +29,12 @@ class User extends Model {
     });
     return this;
   }
+
+  checkPassword(password) {
+    // Checa a informação que o usuário passou com a que está armazenada dentro do bd
+    // Retorno booleano.
+    return bcrypt.compare(password, this.password_hash);
+  }
 }
 
 export default User;
