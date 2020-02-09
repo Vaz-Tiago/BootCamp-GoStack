@@ -17,7 +17,7 @@ class User extends Model {
         sequelize,
       }
     );
-    // Adciona um trecho de código sempre antes de salvar qualquer informação
+    // Adciona um trecho de código sempre antes( de salvar qualquer informação
     // de usuário dentro do banco de dados.
 
     // Primeiro parametro o momento em que será executado
@@ -34,6 +34,11 @@ class User extends Model {
     // Checa a informação que o usuário passou com a que está armazenada dentro do bd
     // Retorno booleano.
     return bcrypt.compare(password, this.password_hash);
+  }
+
+  // Relacionamento das tabelas no model
+  static associate(models) {
+    this.belongsTo(models.File, { foreignKey: 'avatar_id' });
   }
 }
 

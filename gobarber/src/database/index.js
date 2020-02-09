@@ -2,11 +2,12 @@ import Sequelize from 'sequelize';
 
 // Importando os models da aplicação
 import User from '../app/models/User';
+import File from '../app/models/File';
 
 import databaseConfig from '../config/database';
 
 // Criando um array de models:
-const models = [User];
+const models = [User, File];
 
 class Database {
   constructor() {
@@ -18,7 +19,10 @@ class Database {
     this.connection = new Sequelize(databaseConfig);
 
     // Passando para cada um dos models a variavel de conexão
-    models.map(model => model.init(this.connection));
+    models
+      .map(model => model.init(this.connection))
+      // Verificando se há relacionamento, se houver roda o método
+      .map(model => model.associate && model.associate(this.connection.models));
   }
 }
 
