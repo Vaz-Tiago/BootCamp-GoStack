@@ -6,6 +6,14 @@ class File extends Model {
       {
         name: Sequelize.STRING,
         path: Sequelize.STRING,
+        // Retorna um caminho para o frontend utilizar como src da img
+        // Esse recurso deve ser habilitado na class app, em middlewares, use(express.static);
+        url: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            return `http://localhost:3333/files/${this.path}`;
+          },
+        },
       },
       {
         sequelize,

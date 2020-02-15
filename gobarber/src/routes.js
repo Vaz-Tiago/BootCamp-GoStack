@@ -3,6 +3,7 @@ import multer from 'multer';
 import multerConfig from './config/multer';
 
 import UserController from './app/controllers/UserController';
+import ProviderController from './app/controllers/ProviderController';
 import SessionController from './app/controllers/SessionController';
 import FileController from './app/controllers/FileController';
 
@@ -30,5 +31,7 @@ routes.put('/users', UserController.update);
 // upload.single pois vai ser enviado apenas um arquivo por vez
 // Parametro é o nome do campo que vai ser utilizado na requisição
 routes.post('/files', upload.single('file'), FileController.store);
+
+routes.get('/providers', ProviderController.index);
 
 export default routes;
