@@ -35,8 +35,9 @@ routes.post('/files', upload.single('file'), FileController.store);
 
 // Lista os profissionais
 routes.get('/providers', ProviderController.index);
-
 // Faz o agendaento
 routes.post('/appointments', AppointmentController.store);
+// Lista os agendamentos
+routes.get('/appointments', AppointmentController.index);
 
 export default routes;
