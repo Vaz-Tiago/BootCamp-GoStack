@@ -7,6 +7,7 @@ import ProviderController from './app/controllers/ProviderController';
 import SessionController from './app/controllers/SessionController';
 import FileController from './app/controllers/FileController';
 import AppointmentController from './app/controllers/AppointmentController';
+import ScheduleController from './app/controllers/ScheduleController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -39,5 +40,8 @@ routes.get('/providers', ProviderController.index);
 routes.post('/appointments', AppointmentController.store);
 // Lista os agendamentos
 routes.get('/appointments', AppointmentController.index);
+
+// Rota com a agenda do profissional
+routes.get('/schedule', ScheduleController.index);
 
 export default routes;
