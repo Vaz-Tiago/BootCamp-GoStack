@@ -6,6 +6,7 @@ import UserController from './app/controllers/UserController';
 import ProviderController from './app/controllers/ProviderController';
 import SessionController from './app/controllers/SessionController';
 import FileController from './app/controllers/FileController';
+import AppointmentController from './app/controllers/AppointmentController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -32,6 +33,10 @@ routes.put('/users', UserController.update);
 // Parametro é o nome do campo que vai ser utilizado na requisição
 routes.post('/files', upload.single('file'), FileController.store);
 
+// Lista os profissionais
 routes.get('/providers', ProviderController.index);
+
+// Faz o agendaento
+routes.post('/appointments', AppointmentController.store);
 
 export default routes;
