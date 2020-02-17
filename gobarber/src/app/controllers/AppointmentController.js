@@ -8,6 +8,10 @@ import File from '../models/File';
 
 class AppointmentController {
   async index(req, res) {
+    // Paginação: Definindo a página atual. Caso não esteja definida é igual a 1
+    // Passada via query(url: site.com.br/rota?page=1
+    const { page = 1 } = req.query;
+
     const appointments = await Appointment.findAll({
       // Apenas os agendamentos do usuario logado
       where: {
@@ -18,6 +22,13 @@ class AppointmentController {
       order: ['date'],
       // Attributes são as colunas da tabela que serão exibidas
       attributes: ['id', 'date'],
+
+      // Limitação de registros por págia:
+      limit: 20,
+      // Offset é a quantidade de registros que devem ser pulados na busca:
+      // Essa conta é bem simples, pega variavel page, subtrai 1 e multiplica pela
+      // quantidade de registros que devem ser exibidos por página;
+      offset: (page - 1) * 20,
       // Incluí os dados do profissional que foi agendado
       include: [
         {
