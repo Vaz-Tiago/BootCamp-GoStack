@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 
 // date-fns é uma biblioteca que lida com datas no Node.
-import { startOfHour, isBefore, parseISO, format } from 'date-fns';
+import { startOfHour, isBefore, parseISO, format, subHours } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import Appointment from '../models/Appointment';
 import User from '../models/User';
@@ -127,6 +127,38 @@ class AppointmentController {
       content: `Novo agendamento de ${user.name} para o dia ${formatDate} `,
       user: providerId,
     });
+
+    return res.json(appointment);
+  }
+
+  async delete(req, res) {
+    const appointment = await Appointment.findByPk(req.params.id);
+
+    // verificando se o usuario que está cancelando é o mesmo que agendou
+    if (appointment.user_id !== req.userId) {
+      return res
+        .status(401)
+        .json({ error: 'You dont have permission to cancel this appoitment' });
+    }
+
+    // Verificação do horário limite para cancelamento. Duas horas de antecedencia:
+
+    // subHours do date-fns.
+    // 1° parametro: data que tera suas horas subtraidas
+    // 2° parametro: quantidade de horas a subtrair
+    const dateWithSub = subHours(appointment.date, 2);
+
+    if (isBefore(dateWithSub, new Date())) {
+      return res.status(401).json({
+        error: 'You can only cancel appointments 2 hours in advanced',
+      });
+    }
+
+    // Seta data atual para o campo canceled
+    appointment.canceled_at = new Date();
+
+    // Salva o registro
+    await appointment.save();
 
     return res.json(appointment);
   }
