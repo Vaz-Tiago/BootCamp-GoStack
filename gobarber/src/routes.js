@@ -8,6 +8,7 @@ import SessionController from './app/controllers/SessionController';
 import FileController from './app/controllers/FileController';
 import AppointmentController from './app/controllers/AppointmentController';
 import ScheduleController from './app/controllers/ScheduleController';
+import NotificationController from './app/controllers/NotificationController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -36,6 +37,7 @@ routes.post('/files', upload.single('file'), FileController.store);
 
 // Lista os profissionais
 routes.get('/providers', ProviderController.index);
+
 // Faz o agendaento
 routes.post('/appointments', AppointmentController.store);
 // Lista os agendamentos
@@ -43,5 +45,10 @@ routes.get('/appointments', AppointmentController.index);
 
 // Rota com a agenda do profissional
 routes.get('/schedule', ScheduleController.index);
+
+// Rota para notificações
+routes.get('/notifications', NotificationController.index);
+// Rota para atualizar Notificação como lida
+routes.put('/notifications/:id', NotificationController.update);
 
 export default routes;
