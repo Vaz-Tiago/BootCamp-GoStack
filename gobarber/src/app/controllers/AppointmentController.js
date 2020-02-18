@@ -1,10 +1,12 @@
 import * as Yup from 'yup';
 
 // date-fns é uma biblioteca que lida com datas no Node.
-import { startOfHour, isBefore, parseISO } from 'date-fns';
+import { startOfHour, isBefore, parseISO, format } from 'date-fns';
+import pt from 'date-fns/locale/pt';
 import Appointment from '../models/Appointment';
 import User from '../models/User';
 import File from '../models/File';
+import Notification from '../schemas/Notification';
 
 class AppointmentController {
   async index(req, res) {
@@ -104,6 +106,19 @@ class AppointmentController {
 
       // Define como hora inteira.
       date: hourStart,
+    });
+
+    // Notifica o prestador de serviço que um novo agendamento foi feito
+    // Recuperando o nome do usuario que fez o agendamento
+    const user = await User.findByPk(req.userId);
+
+    // Adicionando uma formatação de data com date-fns
+    const formatDate = format(hourStart, "dd 'de' MMMM', às' H:mm'h'", {
+      locale: pt,
+    });
+    await Notification.create({
+      content: `Novo agendamento de ${user.name} para o dia ${formatDate} `,
+      user: providerId,
     });
 
     return res.json(appointment);

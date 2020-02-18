@@ -1,4 +1,5 @@
 import Sequelize from 'sequelize';
+import mongoose from 'mongoose';
 
 // Importando os models da aplicação
 import User from '../app/models/User';
@@ -13,6 +14,7 @@ const models = [User, File, Appointment];
 class Database {
   constructor() {
     this.init();
+    this.mongo();
   }
 
   init() {
@@ -24,6 +26,20 @@ class Database {
       .map(model => model.init(this.connection))
       // Verificando se há relacionamento, se houver roda o método
       .map(model => model.associate && model.associate(this.connection.models));
+  }
+
+  // Iniciando ORM mongoose
+  mongo() {
+    // Passando string de conexão. Não foi criado usuario e senha.
+    // Segundo parametro é um objeto de configurações
+    this.mongoConnection = mongoose.connect(
+      'mongodb://localhost:27017/gobarber',
+      {
+        useNewUrlParser: true,
+        useFindAndModify: true,
+        useUnifiedTopology: true,
+      }
+    );
   }
 }
 
