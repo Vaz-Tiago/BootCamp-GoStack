@@ -9,7 +9,8 @@ import User from '../models/User';
 import File from '../models/File';
 import Notification from '../schemas/Notification';
 
-import Mail from '../../lib/Mail';
+import CancellationEmail from '../jobs/CancellationMail';
+import Queue from '../../lib/Queue';
 
 class AppointmentController {
   async index(req, res) {
@@ -144,6 +145,11 @@ class AppointmentController {
           as: 'provider',
           attributes: ['name', 'email'],
         },
+        {
+          model: User,
+          as: 'user',
+          attributes: ['name'],
+        },
       ],
     });
 
@@ -173,12 +179,11 @@ class AppointmentController {
     // Salva o registro
     await appointment.save();
 
-    // Enviando um email para o provider para informar do cancelamento
-    await Mail.sendEmail({
-      to: `${appointment.provider.name} <${appointment.provider.email}>`,
-      subject: 'Agendamento cancelado',
-      // 3° parametro pode ser TEXT ou HTML
-      text: 'Você tem um novo cancelamento',
+    // Adicionando tarefa na lista de background jobs EMAIL
+    // 1° Parametro KEY
+    // 2° Parametro: Os dados que irão ser utilizado pelo handle
+    await Queue.add(CancellationEmail.key, {
+      appointment,
     });
 
     return res.json(appointment);
