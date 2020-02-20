@@ -27,7 +27,7 @@ class AppointmentController {
       // Ordena por data
       order: ['date'],
       // Attributes são as colunas da tabela que serão exibidas
-      attributes: ['id', 'date'],
+      attributes: ['id', 'date', 'past', 'cancelable'],
 
       // Limitação de registros por págia:
       limit: 20,
