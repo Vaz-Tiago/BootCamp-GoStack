@@ -9,6 +9,7 @@ import FileController from './app/controllers/FileController';
 import AppointmentController from './app/controllers/AppointmentController';
 import ScheduleController from './app/controllers/ScheduleController';
 import NotificationController from './app/controllers/NotificationController';
+import AvailableController from './app/controllers/AvailableController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -37,6 +38,8 @@ routes.post('/files', upload.single('file'), FileController.store);
 
 // Lista os profissionais
 routes.get('/providers', ProviderController.index);
+// Lista horários disponiveis de um profissional na data informada
+routes.get('/providers/:providerId/available', AvailableController.index);
 
 // Faz o agendaento
 routes.post('/appointments', AppointmentController.store);
