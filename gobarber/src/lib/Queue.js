@@ -36,8 +36,15 @@ class Queue {
     jobs.forEach(job => {
       const { bee, handle } = this.queues[job.key];
 
-      bee.process(handle);
+      // EventListener on(''). Utilizado para ouvir os eventos ao processar
+      // failed para ouvir eventos que falharam, etc..
+      // Quando falhar ele vai chamar o método handleFailure
+      bee.on('failed', this.handleFailure).process(handle);
     });
+  }
+
+  handleFailure(job, err) {
+    console.log(`Queue ${job.queue.name}: FAILED`, err);
   }
 }
 
