@@ -3,10 +3,10 @@
 module.exports = {
   // Para utilizar precisa ir na documentação ver as dependencias de cada dialeto
   dialect: 'postgres',
-  host: 'localhost',
-  username: 'postgres',
-  password: 'docker',
-  database: 'gobarber',
+  host: process.env.DB_HOST,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
   define: {
     // Coluna createdAt e updatedAt em cada tabela do meu bd
     timestamps: true,
