@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { MdAddShoppingCart } from 'react-icons/md';
 
 // Actions
@@ -12,66 +11,56 @@ import { formatPrice } from '../../utils/format';
 
 import { ProductList } from './styles';
 
-class Home extends Component {
-  state = {
-    products: [],
-  };
+export default function Home() {
+  const [products, setProducts] = useState([]);
 
-  async componentDidMount() {
-    const response = await api.get('products');
+  // hook para o connect
+  const amount = useSelector(state =>
+    state.cart.reduce((sumAmount, product) => {
+      sumAmount[product.id] = product.amount;
+      return sumAmount;
+    }, {})
+  );
 
-    const data = response.data.map(product => ({
-      ...product,
-      priceFormatted: formatPrice(product.price),
-    }));
+  // hook para o dispatch
+  const dispatch = useDispatch();
 
-    this.setState({ products: data });
+  useEffect(() => {
+    async function loadProducts() {
+      const response = await api.get('products');
+
+      const data = response.data.map(product => ({
+        ...product,
+        priceFormatted: formatPrice(product.price),
+      }));
+
+      setProducts(data);
+    }
+
+    loadProducts();
+  }, []);
+
+  function handleAddProoduct(id) {
+    // Para utilizar o dispatch envolve a action por ele:
+    dispatch(CartActions.addToCartRequest(id));
   }
+  return (
+    <ProductList>
+      {products.map(product => (
+        <li key={product.id}>
+          <img src={product.image} alt={product.title} />
+          <strong>{product.title}</strong>
+          <span>{product.priceFormatted}</span>
 
-  handleAddProoduct = id => {
-    // Dispatch é chamado sempre que houver uma action;
-    // Ativa todos os reducers da aplicação
-    const { addToCartRequest } = this.props;
-    addToCartRequest(id);
-  };
-
-  render() {
-    const { products } = this.state;
-    const { amount } = this.props;
-    return (
-      <ProductList>
-        {products.map(product => (
-          <li key={product.id}>
-            <img src={product.image} alt={product.title} />
-            <strong>{product.title}</strong>
-            <span>{product.priceFormatted}</span>
-
-            <button
-              type="button"
-              onClick={() => this.handleAddProoduct(product.id)}
-            >
-              <div>
-                <MdAddShoppingCart size={16} color="#fff" />
-                {amount[product.id] || 0}
-              </div>
-              <span>ADICIONAR AO CARRINHO</span>
-            </button>
-          </li>
-        ))}
-      </ProductList>
-    );
-  }
+          <button type="button" onClick={() => handleAddProoduct(product.id)}>
+            <div>
+              <MdAddShoppingCart size={16} color="#fff" />
+              {amount[product.id] || 0}
+            </div>
+            <span>ADICIONAR AO CARRINHO</span>
+          </button>
+        </li>
+      ))}
+    </ProductList>
+  );
 }
-
-const mapStateToProps = state => ({
-  amount: state.cart.reduce((amount, product) => {
-    amount[product.id] = product.amount;
-    return amount;
-  }, {}),
-});
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(CartActions, dispatch);
-
-// 1° param null porque é referente ao masStateToProps, e como ainda não tem é null
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
