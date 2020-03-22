@@ -13,21 +13,31 @@ export default function cart(state = [], action) {
 
   // Segundo item do array é um objeto, que recebe todos os dados do produto a acrescenta alguns a mais
   switch (action.type) {
+    // Modo sem saga
+    // case '@cart/ADD_SUCCESS':
+    //   // Utilizando o immer
+    //   // state é o stado atual
+    //   // draft o rascunho que iremos fazer
+    //   return produce(state, draft => {
+    //     // Verificando se o produto já está na lista
+    //     const productIndex = draft.findIndex(p => p.id === action.product.id);
+    //     if (productIndex >= 0) {
+    //       draft[productIndex].amount += 1;
+    //     } else {
+    //       draft.push({
+    //         ...action.product,
+    //         amount: 1,
+    //       });
+    //     }
+    //   });
+
+    // Com saga:
+    // Vai apenas adicionar ao carrinho, o saga controla a quantidade
     case '@cart/ADD_SUCCESS':
-      // Utilizando o immer
-      // state é o stado atual
-      // draft o rascunho que iremos fazer
       return produce(state, draft => {
-        // Verificando se o produto já está na lista
-        const productIndex = draft.findIndex(p => p.id === action.product.id);
-        if (productIndex >= 0) {
-          draft[productIndex].amount += 1;
-        } else {
-          draft.push({
-            ...action.product,
-            amount: 1,
-          });
-        }
+        const { product } = action;
+
+        draft.push(product);
       });
 
     case '@cart/REMOVE':
@@ -39,10 +49,7 @@ export default function cart(state = [], action) {
         }
       });
 
-    case '@cart/UPDATE_AMOUNT': {
-      if (action.amount <= 0) {
-        return state;
-      }
+    case '@cart/UPDATE_AMOUNT_SUCCESS': {
       return produce(state, draft => {
         const productIndex = draft.findIndex(p => p.id === action.id);
         if (productIndex >= 0) {
