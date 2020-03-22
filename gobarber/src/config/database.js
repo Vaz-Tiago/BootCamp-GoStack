@@ -1,4 +1,5 @@
 // Utilizado essa sintaxe pois o sequelize-cli não consegue entender export default
+require('dotenv').config();
 
 module.exports = {
   // Para utilizar precisa ir na documentação ver as dependencias de cada dialeto
