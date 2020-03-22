@@ -13,7 +13,7 @@ export default function cart(state = [], action) {
 
   // Segundo item do array é um objeto, que recebe todos os dados do produto a acrescenta alguns a mais
   switch (action.type) {
-    case '@cart/ADD':
+    case '@cart/ADD_SUCCESS':
       // Utilizando o immer
       // state é o stado atual
       // draft o rascunho que iremos fazer
@@ -29,6 +29,7 @@ export default function cart(state = [], action) {
           });
         }
       });
+
     case '@cart/REMOVE':
       return produce(state, draft => {
         const productIndex = draft.findIndex(p => p.id === action.id);
@@ -37,6 +38,18 @@ export default function cart(state = [], action) {
           draft.splice(productIndex, 1);
         }
       });
+
+    case '@cart/UPDATE_AMOUNT': {
+      if (action.amount <= 0) {
+        return state;
+      }
+      return produce(state, draft => {
+        const productIndex = draft.findIndex(p => p.id === action.id);
+        if (productIndex >= 0) {
+          draft[productIndex].amount = Number(action.amount);
+        }
+      });
+    }
     default:
       return state;
   }
