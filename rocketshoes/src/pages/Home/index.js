@@ -1,10 +1,15 @@
 /* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { MdAddShoppingCart } from 'react-icons/md';
+
+// Actions
+import * as CartActions from '../../store/modules/cart/actions';
 
 import api from '../../services/api';
 import { formatPrice } from '../../utils/format';
+
 import { ProductList } from './styles';
 
 class Home extends Component {
@@ -26,12 +31,8 @@ class Home extends Component {
   handleAddProoduct = product => {
     // Dispatch é chamado sempre que houver uma action;
     // Ativa todos os reducers da aplicação
-    const { dispatch } = this.props;
-    dispatch({
-      // Toda action tem um type:
-      type: 'ADD_TO_CART',
-      product,
-    });
+    const { addToCart } = this.props;
+    addToCart(product);
   };
 
   render() {
@@ -60,4 +61,8 @@ class Home extends Component {
   }
 }
 
-export default connect()(Home);
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(CartActions, dispatch);
+
+// 1° param null porque é referente ao masStateToProps, e como ainda não tem é null
+export default connect(null, mapDispatchToProps)(Home);
