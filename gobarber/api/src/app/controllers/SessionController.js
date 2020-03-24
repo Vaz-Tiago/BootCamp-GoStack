@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 
 import authConfig from '../../config/authConfig';
 import User from '../models/User';
+import File from '../models/File';
 
 class SessionController {
   async store(req, res) {
@@ -20,7 +21,12 @@ class SessionController {
     const { email, password } = req.body;
 
     // Verificação se usuário existe
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({
+      where: { email },
+      include: [
+        { model: File, as: 'avatar', attributes: ['id', 'path', 'url'] },
+      ],
+    });
 
     if (!user) {
       // Status 401 é de unauthorized
@@ -34,13 +40,15 @@ class SessionController {
 
     // Caso tudo ocorra bem retorna os dados:
 
-    const { id, name } = user;
+    const { id, name, avatar, provider } = user;
     return res.json({
       // Variavel com as informações do usuário
       user: {
         id,
         name,
         email,
+        provider,
+        avatar,
       },
       // Variável com informações do token
       // 1° Parametro: Payload. Info usuário. Objeto

@@ -2,6 +2,7 @@ import 'dotenv/config';
 
 import express from 'express';
 import path from 'path';
+import cors from 'cors';
 import Youch from 'youch';
 import * as Sentry from '@sentry/node';
 // Necessário SEMPRE importar o express-async-error antes de importar as rotas
@@ -32,6 +33,8 @@ class App {
     if (process.env.NODE_ENV === 'development') {
       this.server.use(Sentry.Handlers.requestHandler());
     }
+    // Autorização de acesso de forntes externas a api
+    this.server.use(cors());
 
     this.server.use(express.json());
 

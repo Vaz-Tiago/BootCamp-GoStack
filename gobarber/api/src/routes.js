@@ -22,7 +22,6 @@ routes.get('/', (req, res) => {
   return res.json({ Message: 'Seja Bem Vindo' });
 });
 
-routes.post('/teste', ScheduleController.teste);
 // Parametro da rota é o método da classe
 routes.post('/users', UserController.store);
 
