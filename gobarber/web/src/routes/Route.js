@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import AuthLayout from '~/pages/_layouts/auth';
 import DefaultLayout from '~/pages/_layouts/default';
 
+import store from '~/store';
+
 // Component chama RouteWrapper mas poderia receber qualquer nome
 // Desestruturação dos parametros que rece:
 // component: Component (Com C maiusculo para que possa ser um componenet do React)
@@ -16,7 +18,7 @@ export default function RouteWrapper({
   ...rest
 }) {
   // Verfica se está logado
-  const signed = false;
+  const { signed } = store.getState().auth;
   // Se não está logado e a rota é privada, retorna para o root
   if (!signed && isPrivate) {
     return <Redirect to="/" />;
