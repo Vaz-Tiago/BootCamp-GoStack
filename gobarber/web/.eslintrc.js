@@ -28,10 +28,17 @@ module.exports = {
     "react-native/no-raw-text": "off",
     "no-param-reassign": "off",
     "no-underscore-dangle": "off",
-    camelcase: "off",
+    "camelcase": "off",
     "no-console": ["error", { allow: ["tron"] }],
     "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn"
+    "react-hooks/exhaustive-deps": "warn",
+    'react/jsx-props-no-spreading': ['off']
   },
-
+  settings: {
+    "import/resolver": {
+      "babel-plugin-root-import": {
+        rootPathSuffix: "src"
+      }
+    }
+  }
 };
